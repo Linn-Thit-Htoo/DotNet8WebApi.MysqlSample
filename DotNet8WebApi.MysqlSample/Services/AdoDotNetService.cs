@@ -1,4 +1,5 @@
-﻿using MySqlConnector;
+﻿using Microsoft.AspNetCore.Components.Web;
+using MySqlConnector;
 using Newtonsoft.Json;
 using System.Data;
 
@@ -34,6 +35,34 @@ namespace DotNet8WebApi.MysqlSample.Services
 
                 string jsonStr = JsonConvert.SerializeObject(dataTable);
                 return JsonConvert.DeserializeObject<List<T>>(jsonStr)!;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<T> QueryFirstOrDefaultAsync<T>(string query, MySqlParameter[]? parameters = null)
+        {
+            try
+            {
+                var connection = GetMySqlConnection();
+                await connection.OpenAsync();
+
+                MySqlCommand command = new(query, connection);
+                if (parameters is not null)
+                {
+                    command.Parameters.AddRange(parameters);
+                }
+
+                MySqlDataAdapter adapter = new(command);
+                DataTable dataTable = new();
+                adapter.Fill(dataTable);
+
+                await connection.CloseAsync();
+
+                string jsonStr = JsonConvert.SerializeObject(dataTable);
+                return JsonConvert.DeserializeObject<T>(jsonStr)!;
             }
             catch (Exception ex)
             {
