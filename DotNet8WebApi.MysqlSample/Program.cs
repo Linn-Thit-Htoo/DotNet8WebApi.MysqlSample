@@ -1,3 +1,4 @@
+using DotNet8WebApi.MysqlSample.Services;
 using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddMySqlDataSource(builder.Configuration.GetConnectionString("DbConnection")!);
+
+builder.Services.AddScoped<AdoDotNetService>();
 
 var app = builder.Build();
 

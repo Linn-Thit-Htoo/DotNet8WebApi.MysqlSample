@@ -1,4 +1,5 @@
 ﻿using DotNet8WebApi.MysqlSample.Models;
+using DotNet8WebApi.MysqlSample.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
@@ -10,10 +11,12 @@ namespace DotNet8WebApi.MysqlSample.Controllers
     public class BlogController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly AdoDotNetService _adoDotNetService;
 
-        public BlogController(IConfiguration configuration)
+        public BlogController(IConfiguration configuration, AdoDotNetService adoDotNetService)
         {
             _configuration = configuration;
+            _adoDotNetService = adoDotNetService;
         }
 
         [HttpGet]
@@ -48,6 +51,22 @@ namespace DotNet8WebApi.MysqlSample.Controllers
                 }
 
                 await connection.CloseAsync();
+
+                return Ok(lst);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("V1")]
+        public async Task<IActionResult> GetBlogsV1()
+        {
+            try
+            {
+                string query = @"SELECT BlogId, BlogTitle, BlogAuthor, BlogContent FROM Tbl_Blog";
+                var lst = await _adoDotNetService.QueryAsync<BlogModel>(query);
 
                 return Ok(lst);
             }
