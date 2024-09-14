@@ -75,5 +75,37 @@ namespace DotNet8WebApi.MysqlSample.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBlog(int id)
+        {
+            try
+            {
+                string query = @"SELECT BlogId, BlogTitle, BlogAuthor, BlogContent FROM Tbl_Blog WHERE BlogId = @BlogId";
+                var parameters = new List<MySqlParameter>()
+                {
+                    new("BlogId", id)
+                };
+
+                var dt = await _adoDotNetService.QueryFirstOrDefaultAsync(query, parameters.ToArray());
+                if (dt.Rows.Count <= 0)
+                {
+                    return NotFound("No data found.");
+                }
+
+                var blog = new BlogModel()
+                {
+                    BlogId = Convert.ToInt32(dt.Rows[0]["BlogId"]),
+                    BlogTitle = Convert.ToString(dt.Rows[0]["BlogTitle"])!,
+                    BlogAuthor = Convert.ToString(dt.Rows[0]["BlogAuthor"])!,
+                    BlogContent = Convert.ToString(dt.Rows[0]["BlogContent"])!
+                };
+                return Ok(blog);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

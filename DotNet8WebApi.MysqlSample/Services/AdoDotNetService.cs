@@ -42,7 +42,7 @@ namespace DotNet8WebApi.MysqlSample.Services
             }
         }
 
-        public async Task<T> QueryFirstOrDefaultAsync<T>(string query, MySqlParameter[]? parameters = null)
+        public async Task<DataTable> QueryFirstOrDefaultAsync(string query, MySqlParameter[]? parameters = null)
         {
             try
             {
@@ -61,8 +61,7 @@ namespace DotNet8WebApi.MysqlSample.Services
 
                 await connection.CloseAsync();
 
-                string jsonStr = JsonConvert.SerializeObject(dataTable);
-                return JsonConvert.DeserializeObject<T>(jsonStr)!;
+                return dataTable;
             }
             catch (Exception ex)
             {
