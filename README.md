@@ -1,0 +1,1 @@
+[https://medium.com/c-sharp-programming/mysql-database-with-net-core-6-and-entity-framework-cc901bde9127](https://medium.com/c-sharp-programming/mysql-database-with-net-core-6-and-entity-framework-cc901bde9127)
